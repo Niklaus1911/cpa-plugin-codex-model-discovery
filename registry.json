@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "plugins": [
     {
       "id": "codex-model-discovery",
@@ -17,7 +17,37 @@
         "discovery"
       ],
       "install": {
-        "type": "github-release"
+        "type": "direct",
+        "artifacts": [
+          {
+            "goos": "darwin",
+            "goarch": "arm64",
+            "url": "https://github.com/Niklaus1911/cpa-plugin-codex-model-discovery/releases/download/v0.1.1/codex-model-discovery_0.1.1_darwin_arm64.zip",
+            "sha256": "2a854e9e4dab6ac24b8fdf83b91e324e5c5a526e3172e115fbca23f490c8da40",
+            "size": 1805228
+          },
+          {
+            "goos": "linux",
+            "goarch": "amd64",
+            "url": "https://github.com/Niklaus1911/cpa-plugin-codex-model-discovery/releases/download/v0.1.1/codex-model-discovery_0.1.1_linux_amd64.zip",
+            "sha256": "8736b0a662b2fd5c3d2bf78c60f922343591b426393264c3b7a957717ed04c1f",
+            "size": 2039705
+          },
+          {
+            "goos": "linux",
+            "goarch": "arm64",
+            "url": "https://github.com/Niklaus1911/cpa-plugin-codex-model-discovery/releases/download/v0.1.1/codex-model-discovery_0.1.1_linux_arm64.zip",
+            "sha256": "7dd197154133ca7704d64a3e7bad13c134eb9712869cda20678069968d37bafb",
+            "size": 1850522
+          },
+          {
+            "goos": "windows",
+            "goarch": "amd64",
+            "url": "https://github.com/Niklaus1911/cpa-plugin-codex-model-discovery/releases/download/v0.1.1/codex-model-discovery_0.1.1_windows_amd64.zip",
+            "sha256": "41448ab56d612ceeaadaaa68993a089b0d8029f7fec0e49f4334466287e177b9",
+            "size": 2050001
+          }
+        ]
       }
     }
   ]

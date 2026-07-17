@@ -13,7 +13,7 @@ const (
 	unhandledProvider = "codex-model-discovery-unhandled"
 )
 
-var version = "0.1.0"
+var version = "0.1.1"
 
 type envelope struct {
 	OK     bool            `json:"ok"`

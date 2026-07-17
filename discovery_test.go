@@ -150,6 +150,47 @@ func TestDiscoveryFailureLogDoesNotContainCredentials(t *testing.T) {
 	}
 }
 
+func TestModelsForAuthRecoversFetcherPanicAndRemainsUsable(t *testing.T) {
+	var logPayload []byte
+	runtime := newPluginRuntime(func(method string, payload []byte) (json.RawMessage, error) {
+		if method == "host.log" {
+			logPayload = append([]byte(nil), payload...)
+		}
+		return json.RawMessage(`{}`), nil
+	})
+	calls := 0
+	runtime.fetch = func(hostCallFunc, string, catalogRequest) ([]modelCatalogEntry, error) {
+		calls++
+		if calls == 1 {
+			panic("secret-token")
+		}
+		return []modelCatalogEntry{{Slug: "gpt-5.6-sol"}}, nil
+	}
+
+	request := codexAuthRequest("secret-token", "account")
+	first := runtime.modelsForAuth(request)
+	if first.Provider != unhandledProvider || len(first.Models) != 0 {
+		t.Fatalf("first response = %#v", first)
+	}
+	if contains(string(logPayload), "secret-token") {
+		t.Fatalf("panic log leaked credentials: %s", logPayload)
+	}
+	runtime.mu.Lock()
+	inflight := len(runtime.inflight)
+	runtime.mu.Unlock()
+	if inflight != 0 {
+		t.Fatalf("inflight entries = %d, want 0", inflight)
+	}
+
+	second := runtime.modelsForAuth(request)
+	if second.Provider != providerCodex || !hasModel(second.Models, "gpt-5.6-sol") {
+		t.Fatalf("second response = %#v", second)
+	}
+	if calls != 2 {
+		t.Fatalf("fetch calls = %d, want 2", calls)
+	}
+}
+
 func TestConfigureInvalidatesCache(t *testing.T) {
 	runtime := newPluginRuntime(nil)
 	runtime.fetch = func(hostCallFunc, string, catalogRequest) ([]modelCatalogEntry, error) {

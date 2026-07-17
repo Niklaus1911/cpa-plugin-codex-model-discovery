@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -95,7 +96,7 @@ func (r *pluginRuntime) modelsForAuth(request authModelRPCRequest) pluginapi.Mod
 	r.inflight[identity] = current
 	r.mu.Unlock()
 
-	models, errFetch := r.fetch(r.call, request.HostCallbackID, catalogRequest{
+	models, errFetch := r.fetchCatalog(request.HostCallbackID, catalogRequest{
 		BaseURL:       values.BaseURL,
 		ClientVersion: cfg.ClientVersion,
 		AccessToken:   values.AccessToken,
@@ -121,6 +122,25 @@ func (r *pluginRuntime) modelsForAuth(request authModelRPCRequest) pluginapi.Mod
 		return unhandledModelResponse()
 	}
 	return pluginapi.ModelResponse{Provider: providerCodex, Models: cached}
+}
+
+func (r *pluginRuntime) fetchCatalog(callbackID string, request catalogRequest) (models []modelCatalogEntry, err error) {
+	defer func() {
+		if recover() != nil {
+			models = nil
+			err = &discoveryFailure{
+				category: "unexpected_failure",
+				cause:    fmt.Errorf("model discovery panicked"),
+			}
+		}
+	}()
+	if r == nil || r.fetch == nil {
+		return nil, &discoveryFailure{
+			category: "host_unavailable",
+			cause:    fmt.Errorf("model discovery fetcher is unavailable"),
+		}
+	}
+	return r.fetch(r.call, callbackID, request)
 }
 
 func (r *pluginRuntime) cachedResponse(identity string) pluginapi.ModelResponse {

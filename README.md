@@ -29,6 +29,8 @@ plugins:
 
 Restart CLIProxyAPI, open the dashboard's Plugin Store, and install **Codex Model Discovery** from the community source. Restart once more after the first installation so the new dynamic library is loaded.
 
+When starting from `config.example.yaml`, replace its sample `plugins:` block or add `codex-model-discovery` beneath the existing `plugins.configs` mapping. Do not add a second `plugins.configs` key; duplicate YAML mapping keys prevent CLIProxyAPI from starting.
+
 On Windows, use the official Windows amd64 CLIProxyAPI build and start it normally:
 
 ```powershell
@@ -43,10 +45,10 @@ Download the release archive matching the host, verify it against `checksums.txt
 
 | Host | Archive | Library |
 | --- | --- | --- |
-| Windows x64 | `codex-model-discovery_0.1.0_windows_amd64.zip` | `codex-model-discovery.dll` |
-| Linux x64 | `codex-model-discovery_0.1.0_linux_amd64.zip` | `codex-model-discovery.so` |
-| Linux ARM64 | `codex-model-discovery_0.1.0_linux_arm64.zip` | `codex-model-discovery.so` |
-| macOS Apple Silicon | `codex-model-discovery_0.1.0_darwin_arm64.zip` | `codex-model-discovery.dylib` |
+| Windows x64 | `codex-model-discovery_0.1.1_windows_amd64.zip` | `codex-model-discovery.dll` |
+| Linux x64 | `codex-model-discovery_0.1.1_linux_amd64.zip` | `codex-model-discovery.so` |
+| Linux ARM64 | `codex-model-discovery_0.1.1_linux_arm64.zip` | `codex-model-discovery.so` |
+| macOS Apple Silicon | `codex-model-discovery_0.1.1_darwin_arm64.zip` | `codex-model-discovery.dylib` |
 
 Enable `plugins.enabled` and `plugins.configs.codex-model-discovery.enabled`, then restart the host.
 

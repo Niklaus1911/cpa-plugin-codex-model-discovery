@@ -128,7 +128,17 @@ jobs:
           for archive in dist/*.zip; do
             unzip -t "$archive"
           done
-          (cd dist && sha256sum ./*.zip > checksums.txt)
+          (cd dist && sha256sum *.zip > checksums.txt)
+          while read -r checksum filename; do
+            test -n "$checksum"
+            case "$filename" in
+              */*)
+                echo "checksum entry must use a basename: $filename" >&2
+                exit 1
+                ;;
+            esac
+          done < dist/checksums.txt
+          (cd dist && sha256sum -c checksums.txt)
           test "$(find dist -maxdepth 1 -name "codex-model-discovery_${version}_*.zip" | wc -l)" -eq 4
       - name: Publish GitHub release
         env:

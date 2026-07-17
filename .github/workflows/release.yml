@@ -60,7 +60,8 @@ jobs:
         with:
           go-version: "1.26.x"
           cache: true
-      - uses: msys2/setup-msys2@v2
+      - id: msys2
+        uses: msys2/setup-msys2@v2
         with:
           update: true
           install: mingw-w64-x86_64-gcc
@@ -71,7 +72,7 @@ jobs:
           $env:CGO_ENABLED = '1'
           $env:GOOS = 'windows'
           $env:GOARCH = 'amd64'
-          $env:CC = 'C:\msys64\mingw64\bin\gcc.exe'
+          $env:CC = Join-Path '${{ steps.msys2.outputs.msys2-location }}' 'mingw64\bin\gcc.exe'
           New-Item -ItemType Directory -Force -Path build, dist | Out-Null
           go build -trimpath -buildmode=c-shared -ldflags="-s -w -X main.version=$version" -o build/codex-model-discovery.dll .
       - name: Package
